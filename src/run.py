@@ -26,6 +26,18 @@ from azure.identity import DefaultAzureCredential
 
 from openai.types.chat import ChatCompletion
 
+#quitar start
+from azure.ai.resources.operations import (
+    AIResourceOperations,
+    ConnectionOperations,
+    DeploymentOperations,
+    MLIndexOperations,
+    PFOperations,
+    ProjectOperations,
+    DataOperations,
+    ModelOperations,
+)
+#quitar end
 source_path = "./src"
 
 # build the index using the product catalog docs from data/3-product-info
@@ -53,10 +65,6 @@ def build_cogsearch_index(index_name, path_to_data):
 
     # register the index so that it shows up in the project
     cloud_index = client.indexes.create_or_update(index)
-
-    print(f"Created index '{cloud_index.name}'")
-    print(f"Local Path: {index.path}")
-    print(f"Cloud Path: {cloud_index.path}")
 
 
 # TEMP: wrapper around chat completion function until chat_completion protocol is supported
@@ -136,9 +144,10 @@ def prepare_search_index(deployment_folder: str):
 
 def deploy_flow(deployment_name, deployment_folder, chat_module):
     client = AIClient.from_config(DefaultAzureCredential())
-
+    
     if not deployment_name:
         deployment_name = f"{client.project_name}-copilot"
+        
     deployment = Deployment(
         name=deployment_name,
         model=Model(
@@ -166,6 +175,7 @@ def deploy_flow(deployment_name, deployment_folder, chat_module):
         },
         instance_count=1
     )
+    
     client.deployments.begin_create_or_update(deployment)
 
 
@@ -287,4 +297,4 @@ if __name__ == "__main__":
             result = asyncio.run(
                 chat_completion([{"role": "user", "content": question}], stream=False)
             )
-            print(result)
+            print(result['choices'][0]['message']['content'])

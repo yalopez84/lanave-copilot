@@ -24,15 +24,16 @@ async def get_documents(query, num_docs=5):
         credential=AzureKeyCredential(os.environ["AZURE_AI_SEARCH_KEY"]),
         index_name=os.environ["AZURE_AI_SEARCH_INDEX_NAME"])
 
+
     aclient = AsyncAzureOpenAI(
         azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
         api_key=os.environ["AZURE_OPENAI_KEY"],    
         api_version=os.environ["AZURE_OPENAI_API_VERSION"]
     )
-
     # generate a vector embedding of the user's question
     embedding = await aclient.embeddings.create(input=query,
                                                model=os.environ["AZURE_OPENAI_EMBEDDING_DEPLOYMENT"])
+                              
     embedding_to_query = embedding.data[0].embedding
 
     context = ""
@@ -43,6 +44,7 @@ async def get_documents(query, num_docs=5):
             search_text="",
             vector_queries=[vector_query],
             select=["id", "content"])
+        
 
         async for result in results:
             context += f"\n>>> From: {result['id']}\n{result['content']}"
