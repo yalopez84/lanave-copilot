@@ -61,7 +61,7 @@ nodes:
     type: code
     path: customer_lookup.py
   inputs:
-    customerId: ${inputs.customerId}pilot:
+    customerId: ${inputs.customerId}
 - name: customer_prompt
   type: prompt
   source:

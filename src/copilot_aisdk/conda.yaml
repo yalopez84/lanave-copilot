@@ -4,4 +4,4 @@ dependencies:
   - "python=3.10"
   - "pip<=23.0.1"
   - pip:
-      - -r copilot_aisdk/requirements.txt
+      --r copilot_aisdk/requirements.txt
